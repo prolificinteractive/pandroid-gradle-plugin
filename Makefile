@@ -1,6 +1,9 @@
 
+clean:
+	./gradlew clean
+
 plugin:
-	./gradlew clean :pandroid-plugin:uploadArchives           \
+	./gradlew :pandroid-plugin:uploadArchives                 \
 	-c plugin-settings.gradle                                 \
 	--console plain                                           \
 	--no-build-cache

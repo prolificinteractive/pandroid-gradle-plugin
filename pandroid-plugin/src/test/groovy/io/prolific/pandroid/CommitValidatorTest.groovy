@@ -1,5 +1,7 @@
 package io.prolific.pandroid
 
+import io.prolific.pandroid.vcs.CommitValidator
+
 class CommitValidatorTest extends GroovyTestCase {
   void testIsCommitValid() {
     assertTrue(CommitValidator.isCommitValid("abc123 Feature - Home"))
