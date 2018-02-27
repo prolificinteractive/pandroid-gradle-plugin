@@ -1,6 +1,7 @@
 buildscript {
   repositories {
     maven { url uri('../repo') }
+    mavenCentral()
   }
   dependencies {
     classpath 'io.prolific.pandroid:pandroid-plugin:0.1'

@@ -1,5 +1,6 @@
 package io.prolific.pandroid.ci
 
+import org.apache.commons.io.FileUtils
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
@@ -7,7 +8,7 @@ class AlphaBuildTask extends DefaultTask {
 
   AlphaBuildTask() {
     group = 'pandroid'
-    description = 'Build an alpha build and moves it to the `ci` folder'
+    description = 'Build an alpha APK and moves it to the `ci` folder'
   }
 
   @TaskAction def alphaBuild() {
@@ -19,9 +20,8 @@ class AlphaBuildTask extends DefaultTask {
 
     def apkFolder = AssembleTaskHelper.apkFolder(buildTask)
     def ciFolder = new File("ci")
-    if (ciFolder.exists()) ciFolder.delete()
-    new File(apkFolder).renameTo(ciFolder.path)
 
-    AssembleTaskHelper.renameApk(ciFolder, "alpha.apk")
+    FileUtils.copyDirectory(apkFolder, ciFolder)
+    AssembleTaskHelper.renameApk(ciFolder, apkFolder, "alpha.apk")
   }
 }

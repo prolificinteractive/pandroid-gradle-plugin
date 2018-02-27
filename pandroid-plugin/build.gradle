@@ -4,14 +4,11 @@ apply plugin: 'maven'
 group = 'io.prolific.pandroid'
 version = '0.1'
 
-repositories {
-  mavenCentral()
-}
-
 dependencies {
-  compile localGroovy()
-  compile gradleApi()
-  testCompile 'junit:junit:4.12'
+  implementation localGroovy()
+  implementation gradleApi()
+  implementation 'commons-io:commons-io:2.6'
+  testImplementation 'junit:junit:4.12'
 }
 
 test {
