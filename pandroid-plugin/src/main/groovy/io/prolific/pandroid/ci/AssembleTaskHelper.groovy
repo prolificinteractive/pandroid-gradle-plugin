@@ -6,7 +6,7 @@ import java.util.regex.Pattern
 
 final class AssembleTaskHelper {
 
-  static String apkFolder(final String taskName) {
+  static File apkFolder(final String taskName) {
     def pattern = Pattern.compile("^:(.*):assemble(.*)\$")
     def matcher = pattern.matcher(taskName)
 
@@ -15,11 +15,12 @@ final class AssembleTaskHelper {
     }
     def projectName = matcher.group(1)
     def variant = matcher.group(2)
-    return "${projectName}/build/outputs/apk${variant.replaceAll("([A-Z])", "/\$1").toLowerCase()}/"
+    return new File(
+        "${projectName}/build/outputs/apk${variant.replaceAll("([A-Z])", "/\$1").toLowerCase()}/")
   }
 
-  static void renameApk(File ciFolder, outputApkFile) {
-    def outputFile = new File("${ciFolder.path}/output.json")
+  static void renameApk(File ciFolder, File apkFolder, outputApkFile) {
+    def outputFile = new File("${apkFolder.path}/output.json")
     outputFile.withReader {
       it.eachLine {
         def matcher = Pattern.compile("\"path\":\"(.*).apk\"").matcher(it)
