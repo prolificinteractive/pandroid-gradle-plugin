@@ -9,5 +9,6 @@ class PAndroidPluginTest extends GroovyTestCase {
     project.pluginManager.apply 'pandroid'
 
     assertTrue(project.tasks.vcsCheck instanceof VcsCheckTask)
+    assertTrue(project.tasks.commitCheck instanceof CommitCheckTask)
   }
 }

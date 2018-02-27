@@ -1,9 +1,16 @@
 
 plugin:
-	./gradlew clean :pandroid-plugin:uploadArchives --console plain --no-build-cache
+	./gradlew clean :pandroid-plugin:uploadArchives           \
+	-c plugin-settings.gradle                                 \
+	--console plain                                           \
+	--no-build-cache
 
-commitCheck: plugin
-	./gradlew commitCheck --console plain
+run: plugin
+	./gradlew commitCheck vcsCheck                            \
+	--console plain                                           \
+	--no-build-cache
 
-vcsCheck: plugin
-	./gradlew vcsCheck --console plain
+test: plugin
+	./gradlew :pandroid-plugin:test                           \
+	--console plain                                           \
+	--no-build-cache
