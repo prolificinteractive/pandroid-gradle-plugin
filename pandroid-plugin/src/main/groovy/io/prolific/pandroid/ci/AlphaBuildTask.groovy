@@ -21,5 +21,7 @@ class AlphaBuildTask extends DefaultTask {
     def ciFolder = new File("ci")
     if (ciFolder.exists()) ciFolder.delete()
     new File(apkFolder).renameTo(ciFolder.path)
+
+    AssembleTaskHelper.renameApk(ciFolder, "alpha.apk")
   }
 }

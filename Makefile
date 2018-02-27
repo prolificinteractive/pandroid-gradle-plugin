@@ -9,7 +9,7 @@ plugin:
 	--no-build-cache
 
 run: plugin
-	./gradlew commitCheck vcsCheck                            \
+	./gradlew commitCheck vcsCheck alphaBuild                 \
 	--console plain                                           \
 	--no-build-cache
 
