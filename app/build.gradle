@@ -22,12 +22,24 @@ android {
     versionName "1.0"
     testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
   }
+
   buildTypes {
+    debug {
+      applicationIdSuffix '.debug'
+    }
+    beta {
+      initWith(buildTypes.debug)
+      applicationIdSuffix '.beta'
+    }
     release {
       minifyEnabled false
       proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
     }
   }
+}
+
+pandroid {
+  alphaTask = ":app:assembleDebug"
 }
 
 dependencies {

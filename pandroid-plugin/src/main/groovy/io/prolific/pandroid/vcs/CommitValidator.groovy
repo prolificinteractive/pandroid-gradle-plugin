@@ -1,4 +1,4 @@
-package io.prolific.pandroid
+package io.prolific.pandroid.vcs
 
 import org.gradle.api.logging.Logger
 
