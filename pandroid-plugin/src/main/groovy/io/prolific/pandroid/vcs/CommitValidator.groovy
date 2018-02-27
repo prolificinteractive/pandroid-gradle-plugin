@@ -2,7 +2,7 @@ package io.prolific.pandroid.vcs
 
 import org.gradle.api.logging.Logger
 
-class CommitValidator {
+final class CommitValidator {
   private CommitValidator() {
     throw new IllegalAccessException("No instances.")
   }
