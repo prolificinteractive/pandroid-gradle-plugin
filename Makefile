@@ -8,9 +8,9 @@ plugin:
 	--no-build-cache
 
 run: plugin
-	./gradlew commitCheck vcsCheck alphaBuild betaBuild releaseBuild  \
+	./gradlew commitCheck vcsCheck ciBuild                            \
 	--no-build-cache
 
-test: plugin
+test: clean plugin
 	./gradlew :pandroid-plugin:test                                   \
 	--no-build-cache
