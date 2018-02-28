@@ -1,10 +1,8 @@
 package io.prolific.pandroid.ci
 
-import org.apache.commons.io.FileUtils
-import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
-class ReleaseBuildTask extends DefaultTask {
+class ReleaseBuildTask extends BuildTask {
 
   ReleaseBuildTask() {
     group = 'pandroid'
@@ -12,16 +10,6 @@ class ReleaseBuildTask extends DefaultTask {
   }
 
   @TaskAction def releaseBuild() {
-    def buildTask = project.extensions.pandroid.releaseTask
-    def process = "./gradlew $buildTask".execute()
-    process.waitFor()
-    println(process.in.text.toString())
-    println(process.err.text.toString())
-
-    def apkFolder = AssembleTaskHelper.apkFolder(buildTask)
-    def ciFolder = new File("ci")
-
-    FileUtils.copyDirectory(apkFolder, ciFolder)
-    AssembleTaskHelper.renameApk(ciFolder, apkFolder, "release.apk")
+    build(project.extensions.pandroid.releaseTask, "release.apk")
   }
 }
