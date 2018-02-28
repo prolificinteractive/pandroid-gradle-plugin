@@ -19,6 +19,19 @@ final class AssembleTaskHelper {
         "${projectName}/build/outputs/apk${variant.replaceAll("([A-Z])", "/\$1").toLowerCase()}/")
   }
 
+  static File mappingFolder(final String taskName) {
+    def pattern = Pattern.compile("^:(.*):assemble(.*)\$")
+    def matcher = pattern.matcher(taskName)
+
+    if (!matcher.find()) {
+      throw new GradleException("Cant map $taskName to a specific mapping path")
+    }
+    def projectName = matcher.group(1)
+    def variant = matcher.group(2)
+    return new File(
+        "${projectName}/build/outputs/mapping${variant.replaceAll("([A-Z])", "/\$1").toLowerCase()}/")
+  }
+
   static void renameApk(File ciFolder, File apkFolder, outputApkFile) {
     def outputFile = new File("${apkFolder.path}/output.json")
     outputFile.withReader {

@@ -1,10 +1,8 @@
 package io.prolific.pandroid.ci
 
-import org.apache.commons.io.FileUtils
-import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
-class BetaBuildTask extends DefaultTask {
+class BetaBuildTask extends BuildTask {
 
   BetaBuildTask() {
     group = 'pandroid'
@@ -12,16 +10,6 @@ class BetaBuildTask extends DefaultTask {
   }
 
   @TaskAction def betaBuild() {
-    def buildTask = project.extensions.pandroid.betaTask
-    def process = "./gradlew $buildTask".execute()
-    process.waitFor()
-    println(process.in.text.toString())
-    println(process.err.text.toString())
-
-    def apkFolder = AssembleTaskHelper.apkFolder(buildTask)
-    def ciFolder = new File("ci")
-
-    FileUtils.copyDirectory(apkFolder, ciFolder)
-    AssembleTaskHelper.renameApk(ciFolder, apkFolder, "beta.apk")
+    build(project.extensions.pandroid.betaTask, "beta.apk")
   }
 }

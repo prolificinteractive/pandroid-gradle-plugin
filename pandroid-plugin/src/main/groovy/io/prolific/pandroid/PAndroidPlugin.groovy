@@ -18,10 +18,16 @@ class PAndroidPlugin implements Plugin<Project> {
 
   @Override void apply(final Project project) {
     project.extensions.add("pandroid", PAndroidPluginExtension)
+
     project.task('commitCheck', type: CommitCheckTask)
     project.task('vcsCheck', type: VcsCheckTask)
+
     project.task('alphaBuild', type: AlphaBuildTask)
     project.task('betaBuild', type: BetaBuildTask)
     project.task('releaseBuild', type: ReleaseBuildTask)
+    project.task('ciBuild', dependsOn: ['alphaBuild', 'betaBuild', 'releaseBuild']) {
+      group = 'pandroid'
+      description = 'Runs all possible build variants needed for ci'
+    }
   }
 }
