@@ -4,7 +4,6 @@ clean:
 
 plugin:
 	./gradlew :pandroid-plugin:uploadArchives                         \
-	-c plugin-settings.gradle                                         \
 	--no-build-cache
 
 run: plugin
