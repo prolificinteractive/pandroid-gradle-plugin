@@ -3,13 +3,10 @@ clean:
 	./gradlew clean
 
 plugin:
-	./gradlew :pandroid-plugin:uploadArchives                         \
-	--no-build-cache
+	./gradlew :pandroid-plugin:uploadArchives
 
 run: plugin
-	./gradlew commitCheck vcsCheck ciBuild                            \
-	--no-build-cache
+	./gradlew commitCheck vcsCheck ciBuild
 
 test: clean plugin
-	./gradlew :pandroid-plugin:test                                   \
-	--no-build-cache
+	./gradlew :pandroid-plugin:test
