@@ -63,6 +63,23 @@ ci
     `-- usage.txt
 ```
 
+# Configuration
+
+Each build task has a default assemble task as following:
+- alphaBuild   : `:app:assembleAlpha`
+- betaBuild    : `:app:assembleBeta`
+- releaseBuild : `:app:assembleRelease`
+
+The default behavior can be overwritten by specifying which assemble task you want the build process to execute in your app's build.gradle:
+
+```groovy
+pandroid {
+  alphaTask   = ':app:assembleInternalDebug'
+  betaTask    = ':app:assembleInternalRelease'
+  releaseTask = ':app:assembleProdRelease'
+}
+```
+
 ## License
 
     MIT License
