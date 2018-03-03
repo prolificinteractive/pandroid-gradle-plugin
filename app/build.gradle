@@ -30,6 +30,7 @@ android {
     }
     beta {
       initWith(buildTypes.debug)
+      minifyEnabled true
       applicationIdSuffix '.beta'
     }
     release {
