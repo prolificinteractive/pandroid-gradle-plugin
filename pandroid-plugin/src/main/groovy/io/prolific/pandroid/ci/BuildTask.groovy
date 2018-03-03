@@ -9,10 +9,7 @@ import java.util.regex.Pattern
 abstract class BuildTask extends DefaultTask {
 
   static void build(String buildTask, String apkName) {
-    def process = "./gradlew $buildTask".execute()
-    process.waitFor()
-    println(process.in.text.toString())
-    println(process.err.text.toString())
+    "./gradlew $buildTask".execute().waitForProcessOutput(System.out, System.err)
 
     def apkFolder = apkFolder(buildTask)
     def mappingFolder = mappingFolder(buildTask)
@@ -21,7 +18,7 @@ abstract class BuildTask extends DefaultTask {
     FileUtils.copyDirectory(apkFolder, ciFolder)
     renameApk(ciFolder, apkFolder, apkName)
     if (mappingFolder.exists()) {
-      FileUtils.copyDirectoryToDirectory(mappingFolder, ciFolder)
+      FileUtils.copyDirectory(mappingFolder, new File("ci/${apkName.replaceAll("\\.apk", "")}"))
     }
   }
 

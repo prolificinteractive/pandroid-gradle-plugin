@@ -8,12 +8,6 @@ import io.prolific.pandroid.vcs.VcsCheckTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
-class PAndroidPluginExtension {
-  String alphaTask = ":app:assembleAlpha"
-  String betaTask = ":app:assembleBeta"
-  String releaseTask = ":app:assembleRelease"
-}
-
 class PAndroidPlugin implements Plugin<Project> {
 
   @Override void apply(final Project project) {

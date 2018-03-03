@@ -23,7 +23,7 @@ buildscript {
 }
 ```
 
-**Step 2.** Apply the plugin to your app's build file.
+**Step 2.** Apply the plugin in your app's build file.
 
 ```groovy
 apply plugin: 'com.android.application'
@@ -48,19 +48,25 @@ This plugin will add four gradle task to your project:
 - release: build a production build and outputs the apk to `ci/release.apk`
 - ciBuild: runs all above tasks one after another.
 
-If the build task has proguard enabled, the mapping files will be moved to the ci folder.
-Here is an example of a ci folder after running a `betaBuild`:
+If the build task has proguard enabled, the mapping files will be moved to the ci folder under a sub-folder named following the apk's name.
+Here is an example of a ci folder after running a `ciBuild` with `beta` and `release` having proguard enabled:
 
 ```
 ci
+|-- alpha.apk
+|-- beta
+|   |-- dump.txt
+|   |-- mapping.txt
+|   |-- seeds.txt
+|   `-- usage.txt
 |-- beta.apk
 |-- output.json
-`-- release
-    |-- dump.txt
-    |-- mapping.txt
-    |-- resources.txt
-    |-- seeds.txt
-    `-- usage.txt
+|-- release
+|   |-- dump.txt
+|   |-- mapping.txt
+|   |-- seeds.txt
+|   `-- usage.txt
+`-- release.apk
 ```
 
 # Configuration
