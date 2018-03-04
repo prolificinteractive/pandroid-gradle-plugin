@@ -32,10 +32,10 @@ apply plugin: 'pandroid'
 
 # Local Setup
 
-The repo has an `app` module to test the plugin locally. To do so, in the root `settings.gradle`, un-comment `include ':app'`, then the run following command to build the plugin and upload it to the local repository located at the root of the project under `repo`.
+The repo has an `app` module to test the plugin locally. To do so, run the following command to build the plugin and upload it to the local repository located at the root of the project under `repo`.
 
 ```bash
-$> ./gradlew :pandroid-plugin:uploadArchives -c settings-local.gradle
+$> make plugin
 ```
 
 You will need to execute the above command each time you make changes to it in order to get the latest changes applied to the application.

@@ -2,8 +2,11 @@ sudo: false
 
 language: groovy
 
+install: true
+
 script:
-  - make test
+  - ./gradlew :pandroid-plugin:uploadArchives -c settings-local.gradle
+  - ./gradlew :pandroid-plugin:test -c settings-local.gradle
 
 jdk:
   - oraclejdk8
