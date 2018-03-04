@@ -3,7 +3,7 @@ clean:
 	./gradlew clean
 
 plugin:
-	./gradlew :pandroid-plugin:uploadArchives
+	./gradlew :pandroid-plugin:uploadArchives -c settings-local.gradle
 
 run: plugin
 	./gradlew commitCheck vcsCheck ciBuild
