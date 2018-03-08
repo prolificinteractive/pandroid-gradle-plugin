@@ -1,5 +1,6 @@
 package io.prolific.pandroid
 
+import io.prolific.pandroid.bootstrap.BootstrapTask
 import io.prolific.pandroid.ci.AlphaBuildTask
 import io.prolific.pandroid.ci.BetaBuildTask
 import io.prolific.pandroid.ci.ReleaseBuildTask
@@ -26,5 +27,6 @@ class PAndroidPlugin implements Plugin<Project> {
     }
 
     project.task('keiko', type: KeikoTask)
+    project.task('bootstrap', type: BootstrapTask)
   }
 }
