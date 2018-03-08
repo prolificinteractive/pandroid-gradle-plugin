@@ -3,6 +3,7 @@ package io.prolific.pandroid
 import io.prolific.pandroid.ci.AlphaBuildTask
 import io.prolific.pandroid.ci.BetaBuildTask
 import io.prolific.pandroid.ci.ReleaseBuildTask
+import io.prolific.pandroid.keiko.KeikoTask
 import io.prolific.pandroid.vcs.CommitCheckTask
 import io.prolific.pandroid.vcs.VcsCheckTask
 import org.gradle.api.Plugin
@@ -23,5 +24,7 @@ class PAndroidPlugin implements Plugin<Project> {
       group = 'pandroid'
       description = 'Runs all possible build variants needed for ci'
     }
+
+    project.task('keiko', type: KeikoTask)
   }
 }
