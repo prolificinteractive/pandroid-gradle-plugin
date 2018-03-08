@@ -44,7 +44,8 @@ android {
 }
 
 pandroid {
-  alphaTask = ":app:assembleDebug"
+  alphaTask = ':app:assembleDebug'
+  dropboxFolder = 'Hut/alpha'
 }
 
 dependencies {

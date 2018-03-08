@@ -42,11 +42,11 @@ You will need to execute the above command each time you make changes to it in o
 
 # Builds
 
-This plugin will add four gradle task to your project:
-- alphaBuild: build a hockey alpha build and outputs the apk to `ci/alpha.apk`
-- betaBuild: build a hockey beta build and outputs the apk to `ci/beta.apk`
-- release: build a production build and outputs the apk to `ci/release.apk`
-- ciBuild: runs all above tasks one after another.
+This plugin will add four gradle tasks to your project:
+- `:alphaBuild`: build a hockey alpha build and outputs the apk to `ci/alpha.apk`
+- `:betaBuild`: build a hockey beta build and outputs the apk to `ci/beta.apk`
+- `:releaseBuild`: build a production build and outputs the apk to `ci/release.apk`
+- `:ciBuild`: runs all above tasks one after another.
 
 If the build task has proguard enabled, the mapping files will be moved to the ci folder under a sub-folder named following the apk's name.
 Here is an example of a ci folder after running a `ciBuild` with `beta` and `release` having proguard enabled:
@@ -72,9 +72,9 @@ ci
 # Configuration
 
 Each build task has a default assemble task as following:
-- alphaBuild   : `:app:assembleAlpha`
-- betaBuild    : `:app:assembleBeta`
-- releaseBuild : `:app:assembleRelease`
+- `:alphaBuild` ⟶ `:app:assembleAlpha`
+- `:betaBuild` ⟶ `:app:assembleBeta`
+- `:releaseBuild` ⟶ `:app:assembleRelease`
 
 The default behavior can be overwritten by specifying which assemble task you want the build process to execute in your app's build.gradle:
 
@@ -85,6 +85,23 @@ pandroid {
   releaseTask = ':app:assembleProdRelease'
 }
 ```
+
+This plugin also adds a `:bootstrap` task to fetch the keys from Dropbox. You can specify the path to the Dropbox folder as following:
+
+
+```groovy
+pandroid {
+  dropboxFolder = 'Hut/alpha'
+}
+```
+
+And then run:
+
+```bash
+$> ./gradlew bootstrap
+```
+
+Note that the folder with the keys need to be in `/Applications/PAndroid Gradle Plugin/`
 
 ## License
 
