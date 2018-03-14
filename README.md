@@ -83,7 +83,6 @@ pandroid {
 
 This plugin also adds a `:bootstrap` task to fetch the keys from Dropbox. You can specify the path to the Dropbox folder as following:
 
-
 ```groovy
 pandroid {
   dropboxFolder = 'Hut/alpha'
@@ -93,9 +92,11 @@ pandroid {
 And then run:
 
 ```bash
-$> ./gradlew bootstrap
+$> touch bootstrap.gradle
+$> ./gradlew bootstrap -c bootstrap.gradle
 ```
 
+You need an empty settings file to avoid configuring the entire project which will fail as you do not have the keys yet after a fresh cloning.
 Note that the folder with the keys need to be in `/Applications/PAndroid Gradle Plugin/`
 
 ## License
