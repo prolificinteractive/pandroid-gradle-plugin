@@ -10,7 +10,7 @@ The PAndroid Gradle plugin allows all Prolific's Android project to run on our C
 
 # How to
 
-**Step 1.** Add the JitPack repository to your build file
+Add the JitPack repository and apply the plugin in your top level build file.
 
 ```groovy
 buildscript {
@@ -18,15 +18,10 @@ buildscript {
     maven { url 'https://jitpack.io' }
   }
   dependencies {
-    classpath 'com.github.prolificinteractive:pandroid-gradle-plugin:master-SNAPSHOT'
+    classpath 'com.github.prolificinteractive:pandroid-gradle-plugin:<latest-version>'
   }
 }
-```
 
-**Step 2.** Apply the plugin in your app's build file.
-
-```groovy
-apply plugin: 'com.android.application'
 apply plugin: 'pandroid'
 ```
 
