@@ -89,6 +89,12 @@ pandroid {
 }
 ```
 
+First of all, you need access to the dropbox folder used by this plugin. Follow this [link](https://www.dropbox.com/1/oauth2/authorize?client_id=bq8usftpqgqqhmn&response_type=token&redirect_uri=http://localhost) and authorize the application. Once given access, you should see the `access_token` in the url. Then export the access token to your environment variables:
+
+```bash
+export PANDROID_DROPBOX_TOKEN=<access_token>
+```
+
 And then run:
 
 ```bash
