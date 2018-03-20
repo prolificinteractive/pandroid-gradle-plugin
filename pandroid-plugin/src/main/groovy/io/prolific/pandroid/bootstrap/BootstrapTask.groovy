@@ -14,11 +14,16 @@ class BootstrapTask extends DefaultTask {
   }
 
   @TaskAction def bootstrap() {
+
+    def versionFile = new File("version.properties")
+    if (versionFile.exists()) versionFile.delete()
+    versionFile.withWriter { it.write("BUILD_NUMBER = 1\nVERSION = dev\n") }
+
     def pandroidDropboxToken = System.getenv().get("PANDROID_DROPBOX_TOKEN")
     if (pandroidDropboxToken == null) {
       throw new GradleException(
           "You need to export the PANDROID_DROPBOX_TOKEN to your system environment before running the bootstrap task.\n" +
-              "You can find the token in 1Password then on your terminal:\n" +
+              "Refer to the plugin README on how to generate your token:\n" +
               "\$> export PANDROID_DROPBOX_TOKEN=<token>")
     }
 
