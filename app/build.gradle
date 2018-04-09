@@ -44,9 +44,12 @@ android {
 }
 
 pandroid {
-  alphaTask = ':app:assembleDebug'
   dropboxFolder = 'Hut/alpha'
 }
+
+alphaBuild.dependsOn ':app:assembleDebug'
+betaBuild.dependsOn ':app:assembleBeta'
+releaseBuild.dependsOn ':app:assembleRelease'
 
 dependencies {
   implementation fileTree(dir: 'libs', include: ['*.jar'])
