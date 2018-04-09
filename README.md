@@ -66,19 +66,12 @@ ci
 
 # Configuration
 
-Each build task has a default assemble task as following:
-- `:alphaBuild` ⟶ `:app:assembleAlpha`
-- `:betaBuild` ⟶ `:app:assembleBeta`
-- `:releaseBuild` ⟶ `:app:assembleRelease`
-
-The default behavior can be overwritten by specifying which assemble task you want the build process to execute in your app's build.gradle:
+The PAndroid Gradle plugin will add the necessary tasks to the project but you still have to specify on which task they depend in your app's build.gradle:
 
 ```groovy
-pandroid {
-  alphaTask   = ':app:assembleInternalDebug'
-  betaTask    = ':app:assembleInternalRelease'
-  releaseTask = ':app:assembleProdRelease'
-}
+alphaBuild.dependsOn ':app:assembleDebug'
+betaBuild.dependsOn ':app:assembleBeta'
+releaseBuild.dependsOn ':app:assembleRelease'
 ```
 
 This plugin also adds a `:bootstrap` task to fetch the keys from Dropbox. You can specify the path to the Dropbox folder as following:

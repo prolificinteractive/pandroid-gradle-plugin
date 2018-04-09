@@ -10,6 +10,6 @@ class BetaBuildTask extends BuildTask {
   }
 
   @TaskAction def betaBuild() {
-    build(project.extensions.pandroid.betaTask, "beta.apk")
+    dependsOn.each { build(it, "beta.apk") }
   }
 }

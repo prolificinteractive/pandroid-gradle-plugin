@@ -9,11 +9,6 @@ import java.util.regex.Pattern
 abstract class BuildTask extends DefaultTask {
 
   static void build(String buildTask, String apkName) {
-    def process = "./gradlew $buildTask".execute()
-    process.waitForProcessOutput(System.out, System.err)
-
-    if (process.exitValue() != 0) return
-
     def apkFolder = apkFolder(buildTask)
     def mappingFolder = mappingFolder(buildTask)
     def ciFolder = new File("ci")

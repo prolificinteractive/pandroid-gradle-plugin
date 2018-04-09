@@ -18,6 +18,5 @@ class PAndroidPluginTest extends GroovyTestCase {
     Project project = ProjectBuilder.builder().build()
     project.pluginManager.apply 'pandroid'
     assertTrue(project.extensions.pandroid instanceof PAndroidPluginExtension)
-    assertEquals(":app:assembleAlpha", project.extensions.pandroid.alphaTask)
   }
 }

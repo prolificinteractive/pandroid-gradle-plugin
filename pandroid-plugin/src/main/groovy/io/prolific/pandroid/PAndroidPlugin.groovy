@@ -25,8 +25,8 @@ class PAndroidPlugin implements Plugin<Project> {
       group = 'pandroid'
       description = 'Runs all possible build variants needed for ci'
     }
-
-    project.task('keiko', type: KeikoTask)
+    project.task('keiko', type: KeikoTask,
+        dependsOn: project.tasks.find { it.name.contains('sonarqube') })
     project.task('bootstrap', type: BootstrapTask)
   }
 }

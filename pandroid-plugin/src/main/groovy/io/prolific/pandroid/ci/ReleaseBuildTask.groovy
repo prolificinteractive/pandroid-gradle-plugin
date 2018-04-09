@@ -10,6 +10,6 @@ class ReleaseBuildTask extends BuildTask {
   }
 
   @TaskAction def releaseBuild() {
-    build(project.extensions.pandroid.releaseTask, "release.apk")
+    dependsOn.each { build(it, "release.apk") }
   }
 }

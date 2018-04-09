@@ -10,6 +10,6 @@ class AlphaBuildTask extends BuildTask {
   }
 
   @TaskAction def alphaBuild() {
-    build(project.extensions.pandroid.alphaTask, "alpha.apk")
+    dependsOn.each { build(it, "alpha.apk") }
   }
 }
