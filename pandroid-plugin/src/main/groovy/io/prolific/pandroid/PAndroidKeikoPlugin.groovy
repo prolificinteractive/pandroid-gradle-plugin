@@ -1,6 +1,5 @@
 package io.prolific.pandroid
 
-import io.prolific.pandroid.keiko.KeikoTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -147,6 +146,8 @@ class PAndroidKeikoPlugin implements Plugin<Project> {
               new File("${project.projectDir}/src/androidTest/java").mkdirs()
               new File("${project.projectDir}/src/test/kotlin").mkdirs()
               new File("${project.projectDir}/src/androidTest/kotlin").mkdirs()
+              new File("$kotlinClassDir").mkdirs()
+              new File("$javaClassDir").mkdirs()
 
               sonarqube {
 
