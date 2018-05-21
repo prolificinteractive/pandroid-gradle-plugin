@@ -10,7 +10,7 @@ The PAndroid Gradle plugin allows all Prolific's Android project to run on our C
 
 # How to
 
-Add the JitPack repository and apply the plugin in your top level build file.
+Add the JitPack repository and apply these two plugins in your top level build file.
 
 ```groovy
 buildscript {
@@ -18,6 +18,7 @@ buildscript {
     maven { url 'https://jitpack.io' }
   }
   dependencies {
+    classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.6.2"
     classpath 'com.github.prolificinteractive:pandroid-gradle-plugin:<latest-version>'
   }
 }
@@ -72,6 +73,15 @@ The PAndroid Gradle plugin will add the necessary tasks to the project but you s
 alphaBuild.dependsOn ':app:assembleDebug'
 betaBuild.dependsOn ':app:assembleBeta'
 releaseBuild.dependsOn ':app:assembleRelease'
+```
+
+These two properties define which product flavor and build type variant keiko will use to run Junit tests, Android Instrumentated tests and Android Lint.
+
+```groovy
+rootProject.ext {
+    keikoProductFlavor = "prod" // defaults to ''
+    keikoBuildType = "release" // defaults to release
+  }
 ```
 
 This plugin also adds a `:bootstrap` task to fetch the keys from Dropbox. You can specify the path to the Dropbox folder as following:

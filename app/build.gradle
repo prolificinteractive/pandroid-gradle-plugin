@@ -13,8 +13,9 @@ buildscript {
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
-apply plugin: 'pandroid'
 apply plugin: 'org.sonarqube'
+apply plugin: 'pandroid'
+apply plugin: 'pandroid-keiko'
 
 android {
   compileSdkVersion 27
@@ -43,20 +44,27 @@ android {
   }
 }
 
+apply plugin: 'pandroid'
+
 pandroid {
   dropboxFolder = 'Hut/alpha'
+
+  rootProject.ext {
+    keikoProductFlavor = "prod"
+    keikoBuildType = "release"
+  }
 }
 
-alphaBuild.dependsOn ':app:assembleDebug'
-betaBuild.dependsOn ':app:assembleBeta'
-releaseBuild.dependsOn ':app:assembleRelease'
+alphaBuild.dependsOn ':app:assembleInternalDebug'
+betaBuild.dependsOn ':app:assembleInternalRelease'
+releaseBuild.dependsOn ':app:assembleProdRelease'
 
 dependencies {
   implementation fileTree(dir: 'libs', include: ['*.jar'])
   implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
-  implementation 'com.android.support:appcompat-v7:27.0.2'
-  implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+  implementation 'com.android.support:appcompat-v7:27.1.1'
+  implementation 'com.android.support.constraint:constraint-layout:1.1.0'
   testImplementation 'junit:junit:4.12'
-  androidTestImplementation 'com.android.support.test:runner:1.0.1'
-  androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+  androidTestImplementation 'com.android.support.test:runner:1.0.2'
+  androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 }
