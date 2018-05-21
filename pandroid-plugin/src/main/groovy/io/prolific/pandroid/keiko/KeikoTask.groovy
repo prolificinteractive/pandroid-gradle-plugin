@@ -10,7 +10,5 @@ class KeikoTask extends DefaultTask {
   }
 
   @TaskAction def keiko() {
-    def task = task("sonarqubeFinalize", dependsOn: [":sonarqube"])
-    this.finalizedBy task
   }
 }
