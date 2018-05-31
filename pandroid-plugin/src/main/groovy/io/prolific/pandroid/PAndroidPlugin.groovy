@@ -8,7 +8,6 @@ import io.prolific.pandroid.vcs.CommitCheckTask
 import io.prolific.pandroid.vcs.VcsCheckTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.Task
 
 class PAndroidPlugin implements Plugin<Project> {
 

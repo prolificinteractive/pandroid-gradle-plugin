@@ -3,7 +3,10 @@ package io.prolific.pandroid
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
+import org.gradle.api.UnknownTaskException
 import org.gradle.testing.jacoco.tasks.JacocoReport
+
+import javax.annotation.Nullable
 
 class PAndroidKeikoPlugin implements Plugin<Project> {
 
@@ -57,14 +60,18 @@ class PAndroidKeikoPlugin implements Plugin<Project> {
               sourcePath = "${productFlavorName}/${buildTypeName}"
             }
 
-            String productFlavor = project.rootProject.ext.get("keikoProductFlavor")
-            String buildType = project.rootProject.ext.get("keikoBuildType")
-            if (buildType.isEmpty()) {
+            if (!project.rootProject.ext.has("keikoBuildType")) {
               // Set default build type for tests
-              buildType = 'release'
+              project.rootProject.ext.set("keikoBuildType", 'release')
             }
 
-            rootProject.ext.set("keikoBuildType", 'release')
+            if (!project.rootProject.ext.has("keikoProductFlavor")) {
+              project.rootProject.ext.set("keikoProductFlavor", '')
+            }
+
+            String productFlavor = project.rootProject.ext.get("keikoProductFlavor")
+            String buildType = project.rootProject.ext.get("keikoBuildType")
+
             // Filter out variants that haven't been selected specified.
             if (productFlavorName != productFlavor && productFlavorName != '') {
               return
@@ -75,6 +82,77 @@ class PAndroidKeikoPlugin implements Plugin<Project> {
             }
 
             def testTaskName = "test${sourceName.capitalize()}UnitTest"
+
+            // UI, "noise", generated classes, platform classes, etc.
+            def excludes = ['**/R.class',
+                            '**/R$*.class',
+                            '**/*$ViewInjector*.*',
+                            '**/*$ViewBinder*.*',
+                            '**/BuildConfig.*',
+                            '**/Manifest*.*',
+                            '**/*$Lambda$*.*',
+                            '**/*Module.*',
+                            '**/*Dagger*.*',
+                            '**/*MembersInjector*.*',
+                            '**/*_Provide*Factory*.*',
+                            '**/*_Factory*.*']
+
+            def javaClassDir = "${project.buildDir}/intermediates/classes/$sourcePath"
+            def kotlinClassDir = "${project.buildDir}/tmp/kotlin-classes/$sourceName"
+
+            def coverageSourceDirs = ['src/main/java',
+                                      'src/main/kotlin',
+                                      'src/main/res',
+                                      'src/main/AndroidManifest.xml',
+                                      "src/$productFlavorName/java",
+                                      "src/$productFlavorName/kotlin",
+                                      "src/$productFlavorName/res",
+                                      "src/$productFlavorName/AndroidManifest.xml",
+                                      "src/$buildTypeName/java",
+                                      "src/$buildTypeName/kotlin",
+                                      "src/$buildTypeName/res",
+                                      "src/$buildTypeName/AndroidManifest.xml",].findAll {
+              !it.contains("//")
+            }
+
+            coverageSourceDirs.forEach {
+              // Create these source folders if they don't already exist.
+              new File("${project.projectDir}/$it").mkdirs()
+            }
+
+            sonarqube {
+
+              androidVariant sourceName
+
+              properties {
+                // https://docs.sonarqube.org/display/PLUG/Java+Plugin+and+Bytecode
+                def libraries = fileTree(dir: project.android.sdkDirectory.getPath(),
+                    includes: ['platforms/android-27/android.jar']) + fileTree(
+                    dir: project.buildDir,
+                    includes: ['intermediates/classes-jar/**/classes.jar'])
+
+                property "sonar.java.libraries", libraries
+                property "sonar.java.test.libraries", libraries
+
+                property "sonar.exclusions", "build/**,**/*.png,*.iml, **/*generated*"
+                property "sonar.import_unknown_files", true
+
+                property "sonar.sourceEncoding", "UTF-8"
+                property "sonar.sources", coverageSourceDirs.join(",")
+                //                property "sonar.java.binaries", "$javaClassDir,$kotlinClassDir"
+                property "sonar.tests", "src/test/,src/androidTest/"
+                // where the tests are located
+                //                property "sonar.java.test.binaries", "$javaClassDir,$kotlinClassDir"
+                property "sonar.scm.provider", "git"
+                property "sonar.jacoco.reportPaths", fileTree(dir: project.projectDir,
+                    includes: ['**/*.exec'])
+                property "sonar.java.coveragePlugin", "jacoco"
+                property "sonar.jacoco.itReportPath", fileTree(dir: project.projectDir,
+                    includes: ['**/*-coverage.ec'])
+                property "sonar.android.lint.report",
+                    "${project.buildDir}/reports/lint-results-${sourceName}.xml"
+              }
+            }
 
             // Create coverage task of form 'testFlavorTypeCoverage' depending on 'testFlavorTypeUnitTest'
             Task testCoverageTask = project.task("testCoverage", type: JacocoReport,
@@ -89,41 +167,10 @@ class PAndroidKeikoPlugin implements Plugin<Project> {
               description =
                   "Generate Jacoco coverage reports for the ${sourceName.capitalize()} build."
 
-              // UI, "noise", generated classes, platform classes, etc.
-              def excludes = ['**/R.class',
-                              '**/R$*.class',
-                              '**/*$ViewInjector*.*',
-                              '**/*$ViewBinder*.*',
-                              '**/BuildConfig.*',
-                              '**/Manifest*.*',
-                              '**/*$Lambda$*.*',
-                              '**/*Module.*',
-                              '**/*Dagger*.*',
-                              '**/*MembersInjector*.*',
-                              '**/*_Provide*Factory*.*',
-                              '**/*_Factory*.*']
-
-              def javaClassDir = "${project.buildDir}/intermediates/classes/$sourcePath"
-              def kotlinClassDir = "${project.buildDir}/tmp/kotlin-classes/$sourceName"
               classDirectories = fileTree(dir: javaClassDir, excludes: excludes) + fileTree(
                   // Kotlin generated classes on Android project (debug build)
                   dir: kotlinClassDir,
                   excludes: excludes)
-
-              def coverageSourceDirs = ['src/main/java',
-                                        'src/main/kotlin',
-                                        'src/main/res',
-                                        'src/main/AndroidManifest.xml',
-                                        "src/$productFlavorName/java",
-                                        "src/$productFlavorName/kotlin",
-                                        "src/$productFlavorName/res",
-                                        "src/$productFlavorName/AndroidManifest.xml",
-                                        "src/$buildTypeName/java",
-                                        "src/$buildTypeName/kotlin",
-                                        "src/$buildTypeName/res",
-                                        "src/$buildTypeName/AndroidManifest.xml",].findAll {
-                !it.contains("//")
-              }
 
               additionalSourceDirs = files(coverageSourceDirs)
               sourceDirectories = files(coverageSourceDirs)
@@ -136,60 +183,55 @@ class PAndroidKeikoPlugin implements Plugin<Project> {
                 html.enabled = true
               }
 
-              coverageSourceDirs.forEach {
+              doLast {
                 // Create these source folders if they don't already exist.
-                new File("${project.projectDir}/$it").mkdirs()
-              }
+                new File("${project.projectDir}/src/test/java").mkdirs()
+                new File("${project.projectDir}/src/androidTest/java").mkdirs()
+                new File("${project.projectDir}/src/test/kotlin").mkdirs()
+                new File("${project.projectDir}/src/androidTest/kotlin").mkdirs()
+                project.mkdir("build/tmp/kotlin-classes/$sourceName").mkdir()
+                project.mkdir("build/intermediates/classes/$sourcePath").mkdir()
+                project.mkdir("build/intermediates/classes/$sourcePath").mkdir()
 
-              // Create these source folders if they don't already exist.
-              new File("${project.projectDir}/src/test/java").mkdirs()
-              new File("${project.projectDir}/src/androidTest/java").mkdirs()
-              new File("${project.projectDir}/src/test/kotlin").mkdirs()
-              new File("${project.projectDir}/src/androidTest/kotlin").mkdirs()
-              new File("$kotlinClassDir").mkdirs()
-              new File("$javaClassDir").mkdirs()
-
-              sonarqube {
-
-                androidVariant sourceName
-
-                properties {
-                  // https://docs.sonarqube.org/display/PLUG/Java+Plugin+and+Bytecode
-                  def libraries = fileTree(dir: project.android.sdkDirectory.getPath(),
-                      includes: ['platforms/android-27/android.jar']) + fileTree(
-                      dir: project.buildDir,
-                      includes: ['intermediates/classes-jar/**/classes.jar'])
-
-                  property "sonar.java.libraries", libraries
-                  property "sonar.java.test.libraries", libraries
-
-                  property "sonar.exclusions", "build/**,**/*.png,*.iml, **/*generated*"
-                  property "sonar.import_unknown_files", true
-
-                  property "sonar.sourceEncoding", "UTF-8"
-                  property "sonar.sources", coverageSourceDirs.join(",")
-                  property "sonar.java.binaries", "$javaClassDir,$kotlinClassDir"
-                  property "sonar.tests", "src/test/,src/androidTest/"
-                  // where the tests are located
-                  property "sonar.java.test.binaries", "$javaClassDir,$kotlinClassDir"
-                  property "sonar.scm.provider", "git"
-                  property "sonar.jacoco.reportPaths", fileTree(dir: project.projectDir,
-                      includes: ['**/*.exec'])
-                  property "sonar.java.coveragePlugin", "jacoco"
-                  property "sonar.jacoco.itReportPath", fileTree(dir: project.projectDir,
-                      includes: ['**/*-coverage.ec'])
-                  property "sonar.android.lint.report",
-                      "${project.buildDir}/reports/lint-results-${sourceName}.xml"
+                if (new File("${project.buildDir}/tmp/kotlin-classes/$sourceName").exists()) {
+                  sonarqube.properties {
+                    property "sonar.java.binaries", "$javaClassDir,$kotlinClassDir"
+                    property "sonar.java.test.binaries", "$javaClassDir,$kotlinClassDir"
+                  }
+                } else {
+                  sonarqube.properties {
+                    property "sonar.java.binaries", "$javaClassDir"
+                    property "sonar.java.test.binaries", "$javaClassDir"
+                  }
                 }
               }
             }
 
-            Task rootTask = project.rootProject.tasks.getByName("keiko")
+            Task rootTask = getKeikoTask(project.rootProject)
+
+            if (rootTask == null) {
+              rootTask = getKeikoTask(project)
+            }
+
+            if (rootTask == null) {
+              throw UnknownTaskException(
+                  "The keiko task is missing. What the 'pandroid' plugin properly applied?")
+            }
+
             rootTask.dependsOn testCoverageTask
           }
         }
       }
     }
   }
+
+  @Nullable static Task getKeikoTask(Project project) {
+    try {
+      return project.tasks.getByName("keiko")
+    } catch (UnknownTaskException e) {
+      return null
+    }
+  }
 }
+
 
