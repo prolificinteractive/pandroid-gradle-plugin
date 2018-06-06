@@ -104,6 +104,8 @@ class PAndroidKeikoPlugin implements Plugin<Project> {
                                       'src/main/kotlin',
                                       'src/main/res',
                                       'src/main/AndroidManifest.xml',
+                                      'src/test/java',
+                                      'src/androidTest/java',
                                       "src/$productFlavorName/java",
                                       "src/$productFlavorName/kotlin",
                                       "src/$productFlavorName/res",
