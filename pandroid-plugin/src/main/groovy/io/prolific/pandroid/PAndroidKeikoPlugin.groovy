@@ -100,12 +100,13 @@ class PAndroidKeikoPlugin implements Plugin<Project> {
             def javaClassDir = "${project.buildDir}/intermediates/classes/$sourcePath"
             def kotlinClassDir = "${project.buildDir}/tmp/kotlin-classes/$sourceName"
 
+            def javaTestClassDir = "${project.buildDir}/intermediates/classes/test/$sourcePath"
+            def kotlinTestClassDir = "${project.buildDir}/tmp/kotlin-classes/${sourceName}UnitTest"
+
             def coverageSourceDirs = ['src/main/java',
                                       'src/main/kotlin',
                                       'src/main/res',
                                       'src/main/AndroidManifest.xml',
-                                      'src/test/java',
-                                      'src/androidTest/java',
                                       "src/$productFlavorName/java",
                                       "src/$productFlavorName/kotlin",
                                       "src/$productFlavorName/res",
@@ -117,13 +118,22 @@ class PAndroidKeikoPlugin implements Plugin<Project> {
               !it.contains("//")
             }
 
+            def testSourceDirs = ['src/test/java',
+                                  'src/androidTest/java']
+
             coverageSourceDirs.forEach {
-              // Create these source folders if they don't already exist.
+              if (it.contains(".xml")) {
+                new File("${project.projectDir}/$it").createNewFile()
+              } else {
+                new File("${project.projectDir}/$it").mkdirs()
+              }
+            }
+
+            testSourceDirs.forEach {
               new File("${project.projectDir}/$it").mkdirs()
             }
 
             sonarqube {
-
               androidVariant sourceName
 
               properties {
@@ -141,10 +151,7 @@ class PAndroidKeikoPlugin implements Plugin<Project> {
 
                 property "sonar.sourceEncoding", "UTF-8"
                 property "sonar.sources", coverageSourceDirs.join(",")
-                //                property "sonar.java.binaries", "$javaClassDir,$kotlinClassDir"
-                property "sonar.tests", "src/test/,src/androidTest/"
-                // where the tests are located
-                //                property "sonar.java.test.binaries", "$javaClassDir,$kotlinClassDir"
+                property "sonar.tests", testSourceDirs.join(",")
                 property "sonar.scm.provider", "git"
                 property "sonar.jacoco.reportPaths", fileTree(dir: project.projectDir,
                     includes: ['**/*.exec'])
@@ -189,21 +196,22 @@ class PAndroidKeikoPlugin implements Plugin<Project> {
                 // Create these source folders if they don't already exist.
                 new File("${project.projectDir}/src/test/java").mkdirs()
                 new File("${project.projectDir}/src/androidTest/java").mkdirs()
-                new File("${project.projectDir}/src/test/kotlin").mkdirs()
-                new File("${project.projectDir}/src/androidTest/kotlin").mkdirs()
+                // Create folder where java class bytecode live
                 project.mkdir("build/tmp/kotlin-classes/$sourceName").mkdir()
                 project.mkdir("build/intermediates/classes/$sourcePath").mkdir()
-                project.mkdir("build/intermediates/classes/$sourcePath").mkdir()
+                // Create folder where kotlin generated class bytecode live
+                project.mkdir("build/tmp/kotlin-classes/${sourceName}UnitTest").mkdir()
+                project.mkdir("build/intermediates/classes/test/$sourcePath").mkdir()
 
                 if (new File("${project.buildDir}/tmp/kotlin-classes/$sourceName").exists()) {
                   sonarqube.properties {
                     property "sonar.java.binaries", "$javaClassDir,$kotlinClassDir"
-                    property "sonar.java.test.binaries", "$javaClassDir,$kotlinClassDir"
+                    property "sonar.java.test.binaries", "$javaTestClassDir,$kotlinTestClassDir"
                   }
                 } else {
                   sonarqube.properties {
                     property "sonar.java.binaries", "$javaClassDir"
-                    property "sonar.java.test.binaries", "$javaClassDir"
+                    property "sonar.java.test.binaries", "$javaTestClassDir"
                   }
                 }
               }
