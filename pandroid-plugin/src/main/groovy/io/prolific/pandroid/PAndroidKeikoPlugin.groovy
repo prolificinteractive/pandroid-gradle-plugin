@@ -122,11 +122,7 @@ class PAndroidKeikoPlugin implements Plugin<Project> {
                                   'src/androidTest/java']
 
             coverageSourceDirs.forEach {
-              if (it.contains(".xml")) {
-                new File("${project.projectDir}/$it").createNewFile()
-              } else {
-                new File("${project.projectDir}/$it").mkdirs()
-              }
+              new File("${project.projectDir}/$it").mkdirs()
             }
 
             testSourceDirs.forEach {
